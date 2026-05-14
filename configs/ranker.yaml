@@ -1,0 +1,37 @@
+ranker:
+  input:
+    train_path: data/processed/ranking_train.parquet
+    valid_path: data/processed/ranking_valid.parquet
+
+  output:
+    logreg_model_path: artifacts/models/ranker_logreg.pkl
+    challenger_model_path: artifacts/models/ranker_catboost.pkl
+    metrics_json_path: artifacts/metrics/ranking_evaluation_valid.json
+    metrics_csv_path: artifacts/metrics/ranking_evaluation_valid.csv
+    report_path: artifacts/reports/ranking_model_report.md
+
+  columns:
+    user_id_column: user_id
+    item_id_column: item_id
+    target_column: target
+
+  training:
+    random_seed: 42
+    baseline_model: logistic_regression
+    challenger_model: catboost
+
+  features:
+    exclude_columns:
+      - user_id
+      - item_id
+      - target
+      - generated_at
+      - retrieval_model
+      - item_genres
+
+  evaluation:
+    k_values:
+      - 5
+      - 10
+      - 20
+      - 50

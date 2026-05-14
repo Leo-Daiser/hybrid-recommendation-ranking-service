@@ -1,0 +1,44 @@
+mind:
+  dataset_name: MIND
+  version: MINDsmall
+
+  raw_data_dir: data/raw/mind/MINDsmall
+  processed_data_dir: data/processed/mind
+
+  expected_files:
+    train_behaviors: train/behaviors.tsv
+    train_news: train/news.tsv
+    valid_behaviors: valid/behaviors.tsv
+    valid_news: valid/news.tsv
+
+  columns:
+    behaviors:
+      impression_id: impression_id
+      user_id: user_id
+      time: time
+      history: history
+      impressions: impressions
+
+    news:
+      item_id: item_id
+      category: category
+      subcategory: subcategory
+      title: title
+      abstract: abstract
+      url: url
+      title_entities: title_entities
+      abstract_entities: abstract_entities
+
+  output:
+    train_interactions_path: data/processed/mind/mind_train_interactions.parquet
+    valid_interactions_path: data/processed/mind/mind_valid_interactions.parquet
+    items_path: data/processed/mind/mind_items.parquet
+    impressions_path: data/processed/mind/mind_impressions.parquet
+
+  parsing:
+    positive_label: 1
+    negative_label: 0
+    source: mind
+
+  validation:
+    strict_foreign_keys: false

@@ -1,0 +1,70 @@
+pipeline:
+  name: hybrid_recommendation_pipeline
+  version: 0.10.0
+
+  steps:
+    - name: download_data
+      command: download-data
+      required_outputs:
+        - data/raw/movielens/ml-latest-small/ratings.csv
+        - data/raw/movielens/ml-latest-small/movies.csv
+        - data/raw/movielens/ml-latest-small/tags.csv
+        - data/raw/movielens/ml-latest-small/links.csv
+
+    - name: validate_raw
+      command: validate-raw
+      required_outputs: []
+
+    - name: prepare_interactions
+      command: prepare-interactions
+      required_outputs:
+        - data/processed/interactions_full.parquet
+        - data/processed/interactions_train.parquet
+        - data/processed/interactions_valid.parquet
+        - data/processed/interactions_test.parquet
+
+    - name: build_features
+      command: build-features
+      required_outputs:
+        - data/processed/user_features.parquet
+        - data/processed/item_features.parquet
+        - data/processed/genre_features.parquet
+
+    - name: build_popularity_candidates
+      command: build-popularity-candidates
+      required_outputs:
+        - data/processed/candidate_cache_popularity.parquet
+
+    - name: build_itemknn_candidates
+      command: build-itemknn_candidates
+      required_outputs:
+        - data/processed/item_similarity_topk.parquet
+        - data/processed/candidate_cache_itemknn.parquet
+
+    - name: evaluate_retrieval
+      command: evaluate-retrieval
+      required_outputs:
+        - artifacts/metrics/retrieval_evaluation_valid.json
+        - artifacts/reports/retrieval_evaluation_report.md
+
+    - name: build_ranking_dataset
+      command: build-ranking-dataset
+      required_outputs:
+        - data/processed/ranking_train.parquet
+        - data/processed/ranking_valid.parquet
+
+    - name: train_ranker
+      command: train-ranker
+      required_outputs:
+        - artifacts/models/ranker_logreg.pkl
+        - artifacts/metrics/ranking_evaluation_valid.json
+        - artifacts/reports/ranking_model_report.md
+
+  output:
+    run_metadata_dir: artifacts/pipeline_runs
+    latest_status_path: artifacts/pipeline_runs/latest_status.json
+
+  behavior:
+    stop_on_failure: true
+    skip_existing_outputs: false
+    write_run_metadata: true

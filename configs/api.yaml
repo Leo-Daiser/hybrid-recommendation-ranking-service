@@ -1,0 +1,23 @@
+api:
+  service_name: Hybrid Recommendation and Ranking Service
+  version: 0.8.0
+
+recommendation:
+  default_k: 10
+  max_k: 50
+
+  user_id_column: user_id
+  item_id_column: item_id
+
+  candidate_cache_path: data/processed/candidate_cache_itemknn.parquet
+  popularity_cache_path: data/processed/candidate_cache_popularity.parquet
+
+  user_features_path: data/processed/user_features.parquet
+  item_features_path: data/processed/item_features.parquet
+
+  ranker_model_path: artifacts/models/ranker_logreg.pkl
+
+  score_column: ranking_score
+  fallback_score_column: retrieval_score
+
+  model_version: ranker_logreg_v1

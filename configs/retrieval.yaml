@@ -19,3 +19,13 @@ retrieval:
 
   cold_start:
     fallback_top_k: 50
+
+item_knn:
+  top_k: 50
+  max_neighbors_per_item: 100
+  min_similarity: 0.0
+  interaction_weight: binary_positive
+  aggregation: sum
+  model_name: itemknn_cosine_v1
+  output_similarity_path: data/processed/item_similarity_topk.parquet
+  output_candidate_cache_path: data/processed/candidate_cache_itemknn.parquet
