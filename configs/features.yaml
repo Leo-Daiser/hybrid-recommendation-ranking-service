@@ -1,0 +1,20 @@
+features:
+  user_id_column: user_id
+  item_id_column: item_id
+  original_user_id_column: userId
+  original_item_id_column: movieId
+  rating_column: rating
+  label_column: label
+  timestamp_column: timestamp
+
+input:
+  train_interactions_path: data/processed/interactions_train.parquet
+  movies_table: movies
+
+output:
+  user_features_path: data/processed/user_features.parquet
+  item_features_path: data/processed/item_features.parquet
+  genre_features_path: data/processed/genre_features.parquet
+
+item_features:
+  unknown_genre_token: "(no genres listed)"

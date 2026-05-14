@@ -1,0 +1,30 @@
+dataset:
+  name: movielens
+  version: ml-latest-small
+
+input:
+  ratings_table: ratings
+
+columns:
+  user_id: userId
+  item_id: movieId
+  rating: rating
+  timestamp: timestamp
+
+implicit_feedback:
+  positive_threshold: 4.0
+  label_column: label
+  positive_label: 1
+  negative_label: 0
+
+split:
+  strategy: temporal_global
+  train_size: 0.8
+  valid_size: 0.1
+  test_size: 0.1
+
+output:
+  train_path: data/processed/interactions_train.parquet
+  valid_path: data/processed/interactions_valid.parquet
+  test_path: data/processed/interactions_test.parquet
+  full_path: data/processed/interactions_full.parquet
