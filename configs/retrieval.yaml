@@ -1,31 +1,18 @@
 retrieval:
-  user_id_column: user_id
-  item_id_column: item_id
-  rating_column: rating
-  label_column: label
-  timestamp_column: timestamp
-
-  train_interactions_path: data/processed/interactions_train.parquet
-  item_features_path: data/processed/item_features.parquet
-
-  output_candidate_cache_path: data/processed/candidate_cache_popularity.parquet
-
+  user_id_column: "user_id"
+  item_id_column: "item_id"
+  
   popularity:
+    top_k: 100
+    output_path: "artifacts/candidates/popularity_candidates.parquet"
+    
+  itemknn:
     top_k: 50
-    candidate_pool_size: 500
-    score_column: item_positive_ratio
-    tie_breaker_column: item_rating_count
-    model_name: popularity_v1
-
-  cold_start:
-    fallback_top_k: 50
-
-item_knn:
-  top_k: 50
-  max_neighbors_per_item: 100
-  min_similarity: 0.0
-  interaction_weight: binary_positive
-  aggregation: sum
-  model_name: itemknn_cosine_v1
-  output_similarity_path: data/processed/item_similarity_topk.parquet
-  output_candidate_cache_path: data/processed/candidate_cache_itemknn.parquet
+    similarity: "cosine"
+    min_similarity: 0.01
+    output_path: "artifacts/candidates/itemknn_candidates.parquet"
+    
+  # Shared data sources
+  input:
+    interactions_path: "data/processed/train_interactions.parquet"
+    item_features_path: "data/processed/item_features.parquet"

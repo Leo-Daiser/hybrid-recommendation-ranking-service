@@ -1,3 +1,2 @@
-pool_size: 5
-max_overflow: 10
-echo: false
+db:
+  # Connection details are loaded from ENV

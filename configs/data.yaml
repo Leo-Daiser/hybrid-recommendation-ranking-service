@@ -1,49 +1,17 @@
-dataset:
-  name: movielens
-  version: ml-latest-small
-  source_url: https://files.grouplens.org/datasets/movielens/ml-latest-small.zip
-  raw_data_dir: data/raw/movielens/ml-latest-small
-
-tables:
-  ratings:
-    filename: ratings.csv
-    required_columns:
-      - userId
-      - movieId
-      - rating
-      - timestamp
-    dtypes:
-      userId: int64
-      movieId: int64
-      rating: float64
-      timestamp: int64
-
-  movies:
-    filename: movies.csv
-    required_columns:
-      - movieId
-      - title
-      - genres
-    unique_key:
-      - movieId
-
-  tags:
-    filename: tags.csv
-    required_columns:
-      - userId
-      - movieId
-      - tag
-      - timestamp
-
-  links:
-    filename: links.csv
-    required_columns:
-      - movieId
-      - imdbId
-      - tmdbId
-    unique_key:
-      - movieId
-
-validation:
-  strict_foreign_keys: false
-  allow_missing_tmdb_id: true
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  movielens:
+    url: "https://files.grouplens.org/datasets/movielens/ml-latest-small.zip"
+    zip_name: "ml-latest-small.zip"
+    extract_dir: "movielens/ml-latest-small"
+  tables:
+    movies:
+      required_columns: ["movieId", "title", "genres"]
+      unique_key: ["movieId"]
+    ratings:
+      required_columns: ["userId", "movieId", "rating", "timestamp"]
+    tags:
+      required_columns: ["userId", "movieId", "tag", "timestamp"]
+    links:
+      required_columns: ["movieId", "imdbId", "tmdbId"]

@@ -1,43 +1,20 @@
 ranking:
-  user_id_column: user_id
-  item_id_column: item_id
-  rating_column: rating
-  label_column: label
-  timestamp_column: timestamp
-
   input:
-    interactions_train_path: data/processed/interactions_train.parquet
-    interactions_valid_path: data/processed/interactions_valid.parquet
-    interactions_test_path: data/processed/interactions_test.parquet
-
-    user_features_path: data/processed/user_features.parquet
-    item_features_path: data/processed/item_features.parquet
-
-    candidate_caches:
-      popularity_v1: data/processed/candidate_cache_popularity.parquet
-      itemknn_cosine_v1: data/processed/candidate_cache_itemknn.parquet
-
+    interactions_path: "data/processed/train_interactions.parquet"
+    candidates_path: "artifacts/candidates/itemknn_candidates.parquet"
+    user_features_path: "data/processed/user_features.parquet"
+    item_features_path: "data/processed/item_features.parquet"
+    
   output:
-    ranking_train_path: data/processed/ranking_train.parquet
-    ranking_valid_path: data/processed/ranking_valid.parquet
-
-  labels:
-    positive_label: 1
-    target_column: target
-
-  candidates:
-    use_models:
-      - popularity_v1
-      - itemknn_cosine_v1
-    deduplicate_user_item_pairs: true
-
-  negative_sampling:
-    enabled: true
-    negative_to_positive_ratio: 5
-    random_seed: 42
-    keep_all_positives: true
-
-  pair_features:
-    include_retrieval_features: true
-    include_user_features: true
-    include_item_features: true
+    train_ranking_path: "data/processed/train_ranking.parquet"
+    valid_ranking_path: "data/processed/valid_ranking.parquet"
+    
+  dataset:
+    # Sampling parameters
+    negative_sample_ratio: 5
+    
+  columns:
+    user_id: "user_id"
+    item_id: "item_id"
+    label: "label"
+    score: "retrieval_score"

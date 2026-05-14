@@ -1,33 +1,28 @@
 evaluation:
-  user_id_column: user_id
-  item_id_column: item_id
-  label_column: label
-  rank_column: rank
-  score_column: retrieval_score
-
+  user_id_column: "user_id"
+  item_id_column: "item_id"
+  label_column: "label"
+  rank_column: "rank"
+  score_column: "retrieval_score"
   positive_label: 1
-
+  
   interactions:
-    train_path: data/processed/interactions_train.parquet
-    valid_path: data/processed/interactions_valid.parquet
-    test_path: data/processed/interactions_test.parquet
-
-  item_features_path: data/processed/item_features.parquet
-
+    train_path: "data/processed/train_interactions.parquet"
+    valid_path: "data/processed/valid_interactions.parquet"
+    test_path: "data/processed/test_interactions.parquet"
+    
+  item_features_path: "data/processed/item_features.parquet"
+  
   candidate_caches:
-    popularity_v1: data/processed/candidate_cache_popularity.parquet
-    itemknn_cosine_v1: data/processed/candidate_cache_itemknn.parquet
-
-  k_values:
-    - 5
-    - 10
-    - 20
-    - 50
-
+    popularity: "artifacts/candidates/popularity_candidates.parquet"
+    itemknn_cosine: "artifacts/candidates/itemknn_candidates.parquet"
+    
+  k_values: [10, 50]
+  
   output:
-    valid_json_path: artifacts/metrics/retrieval_evaluation_valid.json
-    valid_csv_path: artifacts/metrics/retrieval_evaluation_valid.csv
-    valid_report_path: artifacts/reports/retrieval_evaluation_report.md
-
+    valid_json_path: "artifacts/metrics/retrieval_valid.json"
+    valid_csv_path: "artifacts/metrics/retrieval_valid.csv"
+    valid_report_path: "artifacts/reports/retrieval_valid.md"
+    
   behavior:
     exclude_users_without_ground_truth: true

@@ -1,70 +1,83 @@
 pipeline:
-  name: hybrid_recommendation_pipeline
-  version: 0.10.0
-
+  name: "MovieLens Hybrid Recommender Pipeline"
+  version: "1.0.0"
+  
+  metadata:
+    run_id_prefix: "run_"
+    runs_dir: "artifacts/pipeline_runs"
+    
   steps:
-    - name: download_data
-      command: download-data
+    download:
+      name: "Download MovieLens"
+      module: "src.data.download"
+      method: "download_movielens"
       required_outputs:
-        - data/raw/movielens/ml-latest-small/ratings.csv
-        - data/raw/movielens/ml-latest-small/movies.csv
-        - data/raw/movielens/ml-latest-small/tags.csv
-        - data/raw/movielens/ml-latest-small/links.csv
+        - "data/raw/movielens/ml-latest-small/ratings.csv"
+        - "data/raw/movielens/ml-latest-small/movies.csv"
 
-    - name: validate_raw
-      command: validate-raw
-      required_outputs: []
+    validate_raw:
+      name: "Validate Raw Schema"
+      module: "src.data.validate_schema"
+      method: "validate_movielens_raw"
+      depends_on: ["download"]
 
-    - name: prepare_interactions
-      command: prepare-interactions
+    prepare_interactions:
+      name: "Temporal Split & Implicit Labels"
+      module: "src.data.prepare_interactions"
+      method: "prepare_interactions"
+      depends_on: ["validate_raw"]
       required_outputs:
-        - data/processed/interactions_full.parquet
-        - data/processed/interactions_train.parquet
-        - data/processed/interactions_valid.parquet
-        - data/processed/interactions_test.parquet
+        - "data/processed/train_interactions.parquet"
+        - "data/processed/valid_interactions.parquet"
 
-    - name: build_features
-      command: build-features
+    build_features:
+      name: "User & Item Features"
+      module: "src.features.build_features"
+      method: "build_features"
+      depends_on: ["prepare_interactions"]
       required_outputs:
-        - data/processed/user_features.parquet
-        - data/processed/item_features.parquet
-        - data/processed/genre_features.parquet
+        - "data/processed/user_features.parquet"
+        - "data/processed/item_features.parquet"
 
-    - name: build_popularity_candidates
-      command: build-popularity-candidates
+    build_popularity_candidates:
+      name: "Popularity Retrieval"
+      module: "src.retrieval.build_candidates"
+      method: "build_popularity_candidates"
+      depends_on: ["prepare_interactions"]
       required_outputs:
-        - data/processed/candidate_cache_popularity.parquet
+        - "artifacts/candidates/popularity_candidates.parquet"
 
-    - name: build_itemknn_candidates
-      command: build-itemknn_candidates
+    build_itemknn_candidates:
+      name: "Item-KNN Retrieval"
+      module: "src.retrieval.build_itemknn_candidates"
+      method: "build_itemknn_candidates"
+      depends_on: ["prepare_interactions", "build_features"]
       required_outputs:
-        - data/processed/item_similarity_topk.parquet
-        - data/processed/candidate_cache_itemknn.parquet
+        - "artifacts/candidates/itemknn_candidates.parquet"
 
-    - name: evaluate_retrieval
-      command: evaluate-retrieval
+    evaluate_retrieval:
+      name: "Retrieval Metrics"
+      module: "src.evaluation.run_retrieval_evaluation"
+      method: "run_retrieval_evaluation"
+      depends_on: ["build_popularity_candidates", "build_itemknn_candidates"]
       required_outputs:
-        - artifacts/metrics/retrieval_evaluation_valid.json
-        - artifacts/reports/retrieval_evaluation_report.md
+        - "artifacts/metrics/retrieval_valid.json"
+        - "artifacts/reports/retrieval_valid.md"
 
-    - name: build_ranking_dataset
-      command: build-ranking-dataset
+    build_ranking_dataset:
+      name: "Ranking Dataset Creation"
+      module: "src.ranking.build_ranking_dataset"
+      method: "build_ranking_dataset"
+      depends_on: ["build_itemknn_candidates", "build_features"]
       required_outputs:
-        - data/processed/ranking_train.parquet
-        - data/processed/ranking_valid.parquet
+        - "data/processed/train_ranking.parquet"
+        - "data/processed/valid_ranking.parquet"
 
-    - name: train_ranker
-      command: train-ranker
+    train_ranker:
+      name: "Ranker Training"
+      module: "src.ranking.run_train_ranker"
+      method: "run_train_ranker"
+      depends_on: ["build_ranking_dataset"]
       required_outputs:
-        - artifacts/models/ranker_logreg.pkl
-        - artifacts/metrics/ranking_evaluation_valid.json
-        - artifacts/reports/ranking_model_report.md
-
-  output:
-    run_metadata_dir: artifacts/pipeline_runs
-    latest_status_path: artifacts/pipeline_runs/latest_status.json
-
-  behavior:
-    stop_on_failure: true
-    skip_existing_outputs: false
-    write_run_metadata: true
+        - "artifacts/models/logreg_ranker.pkl"
+        - "artifacts/reports/ranker_report.md"
