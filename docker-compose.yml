@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=recsys
+      - DB_PASSWORD=recsys_pass
+      - DB_NAME=recsys_db
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./configs:/app/configs
+      - ./src:/app/src
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: recsys
+      POSTGRES_PASSWORD: recsys_pass
+      POSTGRES_DB: recsys_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recsys -d recsys_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

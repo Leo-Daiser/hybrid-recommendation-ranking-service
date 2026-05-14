@@ -1,0 +1,21 @@
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+artifacts/models/*
+artifacts/metrics/*
+artifacts/candidates/*
+artifacts/reports/*
+!artifacts/**/.gitkeep
+
+# Agent configs
+AGENTS.md
+GEMINI.md
+agent/
