@@ -89,12 +89,14 @@ def test_prepare_interactions_end_to_end_with_tmp_files(tmp_path):
     }).to_csv(ratings_path, index=False)
     
     with open(data_cfg_path, "w") as f:
+        import yaml
         yaml.dump({
             "dataset": {"raw_data_dir": str(raw_dir)},
             "tables": {"ratings": {"filename": "ratings.csv"}}
         }, f)
         
     with open(int_cfg_path, "w") as f:
+        import yaml
         yaml.dump({
             "dataset": {"name": "test"},
             "input": {"ratings_table": "ratings"},
