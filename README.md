@@ -42,11 +42,10 @@ A production-like two-stage ML system for recommendations (candidate generation 
    curl http://localhost:8000/health
    ```
 
-### Implemented in Phase 3 (Current Phase)
-- **User Features**: Extracted statistics (mean rating, positive ratio, activity span) strictly from the training interactions.
-- **Item Features**: Extracted item statistics and metadata (genres) strictly from the training interactions and raw movies data.
-- **Leakage Prevention**: Valid and Test splits are excluded from all feature building steps to ensure models do not peek into the future.
-- **Artifacts Generated**: `user_features.parquet`, `item_features.parquet`, `genre_features.parquet` in `data/processed/`.
+### Implemented in Phase 4A (Current Phase)
+- **Popularity Retrieval Baseline**: Implemented the Most Popular recommender system logic based on training item ratings positive ratios and counts.
+- **Candidate Cache**: Generated `candidate_cache_popularity.parquet` cache storing fallback offline recommendations for users.
+- **Leakage Prevention**: Cold-start logic returns top overall items, known users have all previously seen training items excluded from their candidate list.
 
 ### Available Commands
 
@@ -62,21 +61,25 @@ A production-like two-stage ML system for recommendations (candidate generation 
    ```bash
    python -m src.cli prepare-interactions
    ```
-4. **Build Features (Phase 3)**:
+4. **Build Features**:
    ```bash
    python -m src.cli build-features
    ```
-5. **Run Tests**:
+5. **Build Popularity Candidates (Phase 4A)**:
+   ```bash
+   python -m src.cli build-popularity-candidates
+   ```
+6. **Run Tests**:
    ```bash
    pytest -q
    ```
-6. **Initialize DB**:
+7. **Initialize DB**:
    ```bash
    python -m src.cli init-db
    ```
 
-### Known Limitations (Phase 3)
-- No candidate generation (retrieval) implemented.
+### Known Limitations (Phase 4A)
+- No item-item (KNN) or ALS retrieval implemented yet.
 - No ranking models implemented.
 - No offline top-K evaluation.
 - No real-time recommend API.

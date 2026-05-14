@@ -1,0 +1,21 @@
+retrieval:
+  user_id_column: user_id
+  item_id_column: item_id
+  rating_column: rating
+  label_column: label
+  timestamp_column: timestamp
+
+  train_interactions_path: data/processed/interactions_train.parquet
+  item_features_path: data/processed/item_features.parquet
+
+  output_candidate_cache_path: data/processed/candidate_cache_popularity.parquet
+
+  popularity:
+    top_k: 50
+    candidate_pool_size: 500
+    score_column: item_positive_ratio
+    tie_breaker_column: item_rating_count
+    model_name: popularity_v1
+
+  cold_start:
+    fallback_top_k: 50

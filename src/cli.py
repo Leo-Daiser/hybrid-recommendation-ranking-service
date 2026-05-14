@@ -127,5 +127,28 @@ def build_features(
         typer.echo(f"Error: {e}", err=True)
         raise typer.Exit(code=1)
 
+@app.command()
+def build_popularity_candidates(
+    retrieval_config: Path = typer.Option(Path("configs/retrieval.yaml"), "--retrieval-config", help="Path to retrieval config.")
+):
+    """Build popularity retrieval baseline candidates."""
+    typer.echo("Building popularity candidates...")
+    try:
+        from src.retrieval.build_candidates import run_build_popularity_candidates
+        res = run_build_popularity_candidates(retrieval_config_path=retrieval_config)
+        
+        users_covered = res["user_id"].nunique()
+        items_rec = res["item_id"].nunique()
+        avg_cands = len(res) / users_covered if users_covered > 0 else 0
+        
+        typer.echo(f"Candidate cache: shape={res.shape}")
+        typer.echo(f"Users covered: {users_covered}")
+        typer.echo(f"Unique items recommended: {items_rec}")
+        typer.echo(f"Average candidates per user: {avg_cands:.1f}")
+        typer.echo("Saved to data/processed/candidate_cache_popularity.parquet")
+    except Exception as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(code=1)
+
 if __name__ == "__main__":
     app()
