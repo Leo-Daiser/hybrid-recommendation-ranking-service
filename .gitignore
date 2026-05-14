@@ -1,21 +1,33 @@
-.env
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 .coverage
 htmlcov/
+.env
+
+# Data
 data/raw/*
 data/interim/*
 data/processed/*
 !data/**/.gitkeep
+
+# Artifacts
 artifacts/models/*
 artifacts/metrics/*
 artifacts/candidates/*
 artifacts/reports/*
+artifacts/pipeline_runs/*
 !artifacts/**/.gitkeep
+
+# Project specific
+*.parquet
+*.pkl
+*.zip
 
 # Agent configs
 AGENTS.md
 GEMINI.md
 agent/
+.agent/
