@@ -25,9 +25,3 @@ artifacts/pipeline_runs/*
 *.parquet
 *.pkl
 *.zip
-
-# Agent configs
-AGENTS.md
-GEMINI.md
-agent/
-.agent/
