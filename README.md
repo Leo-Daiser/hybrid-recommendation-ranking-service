@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hybrid Recommendation and Ranking Service is a production-like recommendation platform built around a two-stage architecture:
+Hybrid Recommendation and Ranking Service is a local, offline-evaluated two-stage recommendation prototype built around:
 
 1. Candidate generation / retrieval
 2. Supervised ranking
@@ -12,6 +12,16 @@ The project uses MovieLens as the main dataset and includes a migration adapter 
 This is not a notebook-only recommender system. The repository includes data validation, temporal splitting, feature generation, retrieval baselines, ranking dataset construction, model training, offline evaluation, FastAPI serving, PostgreSQL logging, feedback logging, and lightweight pipeline orchestration.
 
 ---
+
+## Results at a glance
+
+This is a **portfolio / offline ML engineering project**, not a deployed recommender with measured online impact.
+
+- **MovieLens validation retrieval Recall@50:** item-KNN **0.1431**, popularity baseline **0.0003** (as reported in the repository's validation results below).
+- **Evaluation approach:** time-based train/validation/test split, retrieval metrics and a separate ranking-dataset evaluation.
+- **Important caveat:** the ranking dataset contains relatively few positive examples after retrieval, so its very high ranking NDCG values are **not** evidence of full-catalog or online performance.
+- **Engineering:** FastAPI `/recommend` endpoint, PostgreSQL request/feedback logging, local pipeline commands and tests.
+- **MIND:** data-adapter only, not a complete second end-to-end recommender.
 
 ## Key Features
 
