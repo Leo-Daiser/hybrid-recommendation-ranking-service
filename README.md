@@ -23,6 +23,16 @@ This is a **portfolio / offline ML engineering project**, not a deployed recomme
 - **Engineering:** FastAPI `/recommend` endpoint, PostgreSQL request/feedback logging, local pipeline commands and tests.
 - **MIND:** data-adapter only, not a complete second end-to-end recommender.
 
+## Read this project in 3 minutes
+
+- **ML problem:** two-stage recommendations on MovieLens — retrieve candidates first, then score them with a supervised ranker.
+- **Methods:** popularity baseline, item-item cosine retrieval, Logistic Regression and CatBoost ranking, temporal splits.
+- **Main comparable offline result:** Recall@50 **0.1431** for item-KNN versus **0.0003** for popularity on the documented validation split.
+- **Engineering evidence:** [data and evaluation code](src/evaluation/), [retrieval implementations](src/retrieval/), [ranking](src/ranking/), [FastAPI service](src/api/), [tests](tests/).
+- **Interpretation:** ranking metrics are measured on a **small constructed candidate set**, not a complete online recommendation experiment.
+
+To reproduce the local pipeline, see [Setup](#setup), [Full Pipeline](#full-pipeline) and [Testing](#testing). MovieLens raw data and trained artifacts are not committed to this repository.
+
 ## Key Features
 
 - MovieLens raw data ingestion and schema validation
